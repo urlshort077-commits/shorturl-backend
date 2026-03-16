@@ -1,0 +1,24 @@
+model User {
+    id          String     @id @default(cuid())
+    firebaseUid String     @unique
+    email       String     @unique
+    name        String
+    avatarUrl   String?
+    role        Role       @default(USER)
+    plan        Plan       @default(FREE)
+    urlLimit    Int        @default(10)
+    urlsCreated Int        @default(0)
+    status      UserStatus @default(ACTIVE)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime?  @updatedAt
+    deletedAt   DateTime?
+
+    urls          Urls[]
+    payments      Payments[]
+    subscriptions Subscriptions[]
+
+    @@index([email])
+    @@index([firebaseUid])
+    @@index([status])
+    @@map("users")
+}

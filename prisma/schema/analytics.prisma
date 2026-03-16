@@ -1,0 +1,20 @@
+model Analytics {
+    id        String   @id @default(cuid())
+    urlsId    String
+    ipAddress String
+    userAgent String
+    referer   String?
+    country   String?
+    city      String?
+    device    String?
+    browser   String?
+    os        String?
+    clickedAt DateTime @default(now())
+
+    url Urls @relation(fields: [urlsId], references: [id], onDelete: Cascade)
+
+    @@index([urlsId])
+    @@index([clickedAt])
+    @@index([country])
+    @@map("analytics")
+}
