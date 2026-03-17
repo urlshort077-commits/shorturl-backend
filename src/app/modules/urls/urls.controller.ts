@@ -19,7 +19,9 @@ const createUrl = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getMyUrls = catchAsync(async (req: Request, res: Response) => {
-    const result = await urlService.getMyUrls(req.user.id)
+    const page  = Number(req.query.page)  || 1
+    const limit = Number(req.query.limit) || 10
+    const result = await urlService.getMyUrls(req.user.id, page, limit)
     sendResponse(res, {
         httpStatuscode: status.OK,
         success:        true,

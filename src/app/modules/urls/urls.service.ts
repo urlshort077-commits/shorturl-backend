@@ -107,16 +107,27 @@ const createUrl = async (userId: string, data: {
     }
 }
 
-const getMyUrls = async (userId: string) => {
-    const urls = await prisma.urls.findMany({
-        where:   { userId },
-        orderBy: { createdAt: 'desc' },
-    })
+const getMyUrls = async (userId: string, page: number = 1, limit: number = 10) => {
+    const skip = (page - 1) * limit
+    const [urls, total] = await Promise.all([
+        prisma.urls.findMany({
+            where:   { userId },
+            skip,
+            take:    limit,
+            orderBy: { createdAt: 'desc' },
+        }),
+        prisma.urls.count({ where: { userId } })
+    ])
 
-    return urls.map(url => ({
-        ...url,
-        shortUrlFull: `${envVars.APP_URL}/${url.customUrl ?? url.shortUrl}`
-    }))
+    return {
+        data: urls.map(url => ({
+            ...url,
+            shortUrlFull: `${envVars.APP_URL}/${url.customUrl ?? url.shortUrl}`
+        })),
+        total,
+        page,
+        totalPages: Math.ceil(total / limit)
+    }
 }
 
 const getUrlById = async (userId: string, urlId: string) => {

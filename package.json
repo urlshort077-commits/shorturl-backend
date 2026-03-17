@@ -6,8 +6,9 @@
     "scripts": {
         "seed": "tsx src/admin/seedAdmin.ts",
         "start": "node dist/server.js",
-        "build": "tsc",
-        "migrate": "prisma migrate dev",
+        "build": "tsc && prisma generate",
+        "postinstall": "prisma generate",
+        "migrate": "prisma migrate deploy",
         "generate": "prisma generate",
         "studio": "prisma studio",
         "dev": "tsx watch src/server.ts",

@@ -2,23 +2,36 @@ import { prisma } from '../../lib/prisma';
 import AppError from '../../helpers/AppError';
 import status from 'http-status';
 
-const getAllMyAnalytics = async (userId: string) => {
-    return prisma.analytics.findMany({
-        where: {
-            url: { userId }
-        },
-        include: {
-            url: {
-                select: {
-                    shortUrl:    true,
-                    customUrl:   true,
-                    originalUrl: true,
-                    totalClicks: true,
+const getAllMyAnalytics = async (userId: string, page: number = 1, limit: number = 10) => {
+    const skip = (page - 1) * limit
+    const [analytics, total] = await Promise.all([
+        prisma.analytics.findMany({
+            where: { url: { userId } },
+            skip,
+            take:  limit,
+            include: {
+                url: {
+                    select: {
+                        shortUrl:    true,
+                        customUrl:   true,
+                        originalUrl: true,
+                        totalClicks: true,
+                    }
                 }
-            }
-        },
-        orderBy: { clickedAt: 'desc' },
-    })
+            },
+            orderBy: { clickedAt: 'desc' },
+        }),
+        prisma.analytics.count({
+            where: { url: { userId } }
+        })
+    ])
+
+    return {
+        data: analytics,
+        total,
+        page,
+        totalPages: Math.ceil(total / limit)
+    }
 }
 
 const getUrlAnalytics = async (userId: string, urlsId: string) => {
