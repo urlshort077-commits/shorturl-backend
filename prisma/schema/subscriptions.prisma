@@ -7,7 +7,7 @@ model Subscriptions {
     urlLimit    Int      @default(10)
     urlsCreated Int      @default(0)
 
-    user    User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+    user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     payment Payments? @relation(fields: [paymentId], references: [id], onDelete: Restrict)
 
     @@index([userId])
