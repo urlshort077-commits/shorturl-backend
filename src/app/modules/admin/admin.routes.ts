@@ -9,30 +9,18 @@ const router = Router()
 
 router.use(authenticate, authorizeAdmin)
 
-router.get(
-    '/users',
-    adminController.getAllUsers
-)
-
-router.patch(
-    '/users/:id',
+router.get('/stats',     adminController.getStats)
+router.get('/users',     adminController.getAllUsers)
+router.patch('/users/:id',
     validateRequest(adminValidation.updateUserStatusValidation),
     adminController.updateUserStatus
 )
-
-router.get(
-    '/urls',
-    adminController.getAllUrls
-)
-router.patch(
-    '/urls/:id',
+router.get('/urls',      adminController.getAllUrls)
+router.patch('/urls/:id',
     validateRequest(adminValidation.updateUrlStatusValidation),
     adminController.updateUrlStatus
 )
-
-router.get(
-    '/analytics',
-    adminController.getAllAnalytics
-)
+router.get('/analytics', adminController.getAllAnalytics)
+router.get('/payments',  adminController.getAllPayments)
 
 export const adminRoutes = router

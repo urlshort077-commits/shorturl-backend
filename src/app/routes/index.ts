@@ -1,16 +1,18 @@
 import { Router } from 'express';
-import { authRoutes } from '../modules/auth/auth.routes';
-import { userRoutes } from '../modules/user/user.routes';
-import { urlRoutes } from '../modules/urls/urls.routes';
-import { adminRoutes } from '../modules/admin/admin.routes';
+import { authRoutes }      from '../modules/auth/auth.routes';
+import { userRoutes }      from '../modules/user/user.routes';
+import { urlRoutes }       from '../modules/urls/urls.routes';
+import { adminRoutes }     from '../modules/admin/admin.routes';
 import { analyticsRoutes } from '../modules/analytics/analytics.routes';
+import { paymentRoutes } from '../modules/payment/payments.routes';
 
 const router = Router()
 
-router.use('/auth', authRoutes)
-router.use('/users', userRoutes)
-router.use('/urls', urlRoutes)
-router.use('/admin', adminRoutes)
+router.use('/auth',      authRoutes)
+router.use('/users',     userRoutes)
+router.use('/urls',      urlRoutes)
+router.use('/admin',     adminRoutes)
 router.use('/analytics', analyticsRoutes)
+router.use('/payments',  paymentRoutes)
 
 export const IndexRoutes = router

@@ -4,8 +4,14 @@ import status from 'http-status';
 import { sendResponse } from '../../shared/sendResponse';
 import { catchAsync } from '../../shared/catchAsync';
 
+const getParam = (param: string | string[]): string => {
+    return Array.isArray(param) ? param[0] : param
+}
+
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
-    const result = await adminService.getAllUsers()
+    const page  = Number(req.query.page)  || 1
+    const limit = Number(req.query.limit) || 10
+    const result = await adminService.getAllUsers(page, limit)
     sendResponse(res, {
         httpStatuscode: status.OK,
         success:        true,
@@ -16,7 +22,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
     const result = await adminService.updateUserStatus(
-        req.body.userId,
+        getParam(req.params.id),
         req.body.status
     )
     sendResponse(res, {
@@ -28,7 +34,9 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllUrls = catchAsync(async (req: Request, res: Response) => {
-    const result = await adminService.getAllUrls()
+    const page  = Number(req.query.page)  || 1
+    const limit = Number(req.query.limit) || 10
+    const result = await adminService.getAllUrls(page, limit)
     sendResponse(res, {
         httpStatuscode: status.OK,
         success:        true,
@@ -39,7 +47,7 @@ const getAllUrls = catchAsync(async (req: Request, res: Response) => {
 
 const updateUrlStatus = catchAsync(async (req: Request, res: Response) => {
     const result = await adminService.updateUrlStatus(
-        req.body.urlId,
+        getParam(req.params.id),
         req.body.urlStatus
     )
     sendResponse(res, {
@@ -51,11 +59,35 @@ const updateUrlStatus = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllAnalytics = catchAsync(async (req: Request, res: Response) => {
-    const result = await adminService.getAllAnalytics()
+    const page  = Number(req.query.page)  || 1
+    const limit = Number(req.query.limit) || 10
+    const result = await adminService.getAllAnalytics(page, limit)
     sendResponse(res, {
         httpStatuscode: status.OK,
         success:        true,
         message:        'Analytics fetched successfully',
+        data:           result,
+    })
+})
+
+const getAllPayments = catchAsync(async (req: Request, res: Response) => {
+    const page  = Number(req.query.page)  || 1
+    const limit = Number(req.query.limit) || 10
+    const result = await adminService.getAllPayments(page, limit)
+    sendResponse(res, {
+        httpStatuscode: status.OK,
+        success:        true,
+        message:        'Payments fetched successfully',
+        data:           result,
+    })
+})
+
+const getStats = catchAsync(async (req: Request, res: Response) => {
+    const result = await adminService.getStats()
+    sendResponse(res, {
+        httpStatuscode: status.OK,
+        success:        true,
+        message:        'Stats fetched successfully',
         data:           result,
     })
 })
@@ -66,4 +98,6 @@ export const adminController = {
     getAllUrls,
     updateUrlStatus,
     getAllAnalytics,
+    getAllPayments,
+    getStats,
 }
