@@ -5,7 +5,7 @@ interface IResponceData<T> {
     message: string;
     data?: T;
 }
-export const sendResponce = <T>(res: Response, responceData: IResponceData<T>) => {
+export const sendResponse = <T>(res: Response, responceData: IResponceData<T>) => {
     const {
         httpStatuscode,
         success,

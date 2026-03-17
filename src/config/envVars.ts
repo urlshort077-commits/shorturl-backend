@@ -12,6 +12,7 @@ interface EnvConfig {
     FIREBASE_PROJECT_ID: string;
     FIREBASE_CLIENT_EMAIL: string;
     FIREBASE_PRIVATE_KEY: string;
+    FIREBASE_WEB_API_KEY: string;
     ADMIN_FIREBASE_UID: string;
     ADMIN_EMAIL: string;
 }
@@ -25,6 +26,7 @@ const loadEnvVariables = (): EnvConfig => {
         'FIREBASE_PROJECT_ID',
         'FIREBASE_CLIENT_EMAIL',
         'FIREBASE_PRIVATE_KEY',
+        'FIREBASE_WEB_API_KEY',
         'ADMIN_FIREBASE_UID',
         'ADMIN_EMAIL',
     ]
@@ -46,6 +48,7 @@ const loadEnvVariables = (): EnvConfig => {
         FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID as string,
         FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL as string,
         FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY as string,
+        FIREBASE_WEB_API_KEY: process.env.FIREBASE_WEB_API_KEY as string,
         ADMIN_FIREBASE_UID: process.env.ADMIN_FIREBASE_UID as string,
         ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
     }
