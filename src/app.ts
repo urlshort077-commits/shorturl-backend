@@ -15,7 +15,7 @@ const app: Application = express()
 app.set('trust proxy', true)
 app.use(helmet())
 
-app.use(cors({
+app.use('/api/v1', cors({
     origin: (origin, callback) => {
         const allowedOrigins = [
             envVars.FRONTEND_URL,
@@ -49,15 +49,14 @@ const apiLimiter = rateLimit({
     message:  'Too many requests, please try again later'
 })
 
-
 const redirectLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max:      30,
     message:  'Too many redirects, please try again later'
 })
 
-app.use('/api/v1/auth',  authLimiter)
-app.use('/api/v1',       apiLimiter)
+app.use('/api/v1/auth', authLimiter)
+app.use('/api/v1',      apiLimiter)
 
 app.use('/api/v1/payments/webhook', express.raw({ type: 'application/json' }))
 
