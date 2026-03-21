@@ -17,52 +17,46 @@ const getPlanPrices = (): Partial<Record<Plan, string>> => ({
 })
 
 const createCheckoutSession = async (userId: string, plan: 'PRO' | 'ULTIMATE') => {
-    const user = await prisma.user.findUnique({
-        where: { id: userId }
-    })
+    const user = await prisma.user.findUnique({ where: { id: userId } })
     if (!user) throw new AppError(status.NOT_FOUND, 'User not found')
 
     const planPrices = getPlanPrices()
     const priceId    = planPrices[plan]
 
-    console.log(`[Checkout] Plan: ${plan}`)
-    console.log(`[Checkout] PRO price ID: ${envVars.STRIPE_PRO_PRICE_ID}`)
-    console.log(`[Checkout] ULTIMATE price ID: ${envVars.STRIPE_ULTIMATE_PRICE_ID}`)
-    console.log(`[Checkout] Using price ID: ${priceId}`)
+    console.log(`[Checkout] Plan: ${plan}, PriceID: ${priceId}`)
 
-    if (!priceId) throw new AppError(status.BAD_REQUEST, `Price ID not configured for plan: ${plan}`)
+    if (!priceId) throw new AppError(status.BAD_REQUEST, `Price not configured for: ${plan}`)
 
-    try {
-        const price = await stripe.prices.retrieve(priceId)
-        console.log(`[Checkout] Price type: ${price.type}, recurring: ${JSON.stringify(price.recurring)}`)
-        if (price.type === 'recurring') {
-            throw new AppError(
-                status.BAD_REQUEST,
-                `Price ${priceId} is recurring — must be one-time. Update STRIPE_PRO_PRICE_ID.`
-            )
-        }
-    } catch (err: unknown) {
-        const e = err as { httpStatusCode?: number, message?: string }
-        if (e?.httpStatusCode === 404) {
-            throw new AppError(status.BAD_REQUEST, `Price ID not found in Stripe: ${priceId}`)
-        }
-        throw err
+    const price = await stripe.prices.retrieve(priceId)
+    console.log(`[Checkout] Price type: ${price.type}, active: ${price.active}, currency: ${price.currency}`)
+
+    if (!price.active) {
+        throw new AppError(status.BAD_REQUEST, `Price ${priceId} is not active in Stripe`)
     }
 
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        mode:                 'payment',
-        line_items: [{
-            price:    priceId,
-            quantity: 1,
-        }],
-        metadata: {
-            userId,
-            plan,
-        },
-        success_url: `${envVars.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url:  `${envVars.FRONTEND_URL}/payment/cancel`,
-    })
+    if (price.type === 'recurring') {
+        throw new AppError(status.BAD_REQUEST, `Price ${priceId} is recurring — must be one-time`)
+    }
+
+    let session
+    try {
+        session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode:                 'payment',
+            line_items: [{
+                price:    priceId,
+                quantity: 1,
+            }],
+            metadata: { userId, plan },
+            success_url: `${envVars.FRONTEND_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url:  `${envVars.FRONTEND_URL}/payment/cancel`,
+        })
+        console.log(`[Checkout] Session created: ${session.id}`)
+    } catch (stripeErr: unknown) {
+        const e = stripeErr as { message?: string, type?: string, param?: string }
+        console.error(`[Checkout] Stripe session error:`, e?.message, `| type: ${e?.type} | param: ${e?.param}`)
+        throw new AppError(status.INTERNAL_SERVER_ERROR, e?.message ?? 'Stripe session creation failed')
+    }
 
     return { checkoutUrl: session.url }
 }
