@@ -12,7 +12,7 @@ import { envVars } from './config/envVars'
 
 const app: Application = express()
 
-app.set('trust proxy', true)
+app.set('trust proxy', 1)
 app.use(helmet())
 
 app.use('/api/v1', cors({
