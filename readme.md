@@ -97,7 +97,7 @@ Key capabilities include real-time click analytics (device, browser, OS, geoloca
 | Plan | Price | URL Limit | Reset |
 |---|---|---|---|
 | FREE | Free | 10 URLs | Lifetime total |
-| PRO | 29 BDT once | 500 URLs | Monthly auto-reset |
+| PRO | 66 BDT once | 500 URLs | Monthly auto-reset |
 | ULTIMATE | 199 BDT once | Unlimited | No limit |
 
 ---
