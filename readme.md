@@ -31,6 +31,12 @@ Key capabilities include real-time click analytics (device, browser, OS, geoloca
 
 ---
 
+## 🗂️ System Overview Diagram
+
+![System Overview](https://i.ibb.co.com/QFq3DDwC/Screenshot-From-2026-03-23-21-09-43.png)
+
+---
+
 ## 🗂️ Entity Relationship Diagram
 
 ![ERD Diagram](https://i.ibb.co.com/Z6krRVGp/Untitled-Diagram.webp)
