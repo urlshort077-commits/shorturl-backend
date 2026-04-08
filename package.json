@@ -6,7 +6,8 @@
     "scripts": {
         "seed": "tsx src/admin/seedAdmin.ts",
         "postinstall": "prisma generate",
-        "migrate": "prisma migrate deploy",
+        "migrate:dev": "prisma migrate dev",
+        "migrate:reset": "prisma migrate reset",
         "generate": "prisma generate",
         "studio": "prisma studio",
         "start": "tsx src/server.ts",
@@ -32,6 +33,7 @@
         "http-status": "^2.1.0",
         "morgan": "^1.10.1",
         "nanoid": "^5.1.7",
+        "node-fetch": "^3.3.2",
         "pg": "^8.20.0",
         "stripe": "^20.4.1",
         "ua-parser-js": "^2.0.9",
